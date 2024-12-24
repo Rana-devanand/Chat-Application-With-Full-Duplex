@@ -12,13 +12,13 @@ const io = socketio(server);
 io.on('connection' , (socket) => {
      console.log('User connected id : ' , socket.id);
 
-     socket.on('disconnect' , () => {
-          console.log('User disconnected');
-     });
-
-	setInterval(() => {
-		socket.emit("from_server");
-	}, 3000);
+     socket.on("msg_send", (data) => {
+          console.log('Message Recieved : ' , data.message);
+          io.emit('msg_recieved' , data);  // emit ->  send a message to all connected clients.
+          socket.emit('msg_recieved' , data);  // emit -> send a message for itself not everyone connected to the socket.
+          socket.broadcast.emit('msg_recieved' , data);  // emit ->  send a message to all connected clients except the sender.
+     })
+    
 });
 
 
